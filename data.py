@@ -1,66 +1,30 @@
 # imports
 import torch
-import torchvision
-import numpy as np
-import matplotlib.pyplot as plt
-import torch.nn as nn
-import torch.nn.functional as F
 from torchvision.datasets import CIFAR10
-from torchvision.transforms import ToTensor
-from torchvision.utils import make_grid
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data import random_split
-import torchvision.models as models
 import torchvision.transforms as transforms
 
-def main():
-    transform_train = transforms.Compose([
-        transforms.Resize(224),
+def dataload():
+    transform = transforms.Compose([
+        transforms.Resize(256),
+        transforms.CenterCrop(224),
         transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
-    transform_test = transforms.Compose([
-        transforms.Resize(224),
-        transforms.ToTensor(),
-    ])
-    # dataset
-    dataset = CIFAR10(root='data/', download=True, transform=transform_train)
-    test_dataset = CIFAR10(root='data/', train=False, transform=transform_test)
+    dataset = CIFAR10(root='data/',  download=True, train=True, transform=transform)
+    test_dataset = CIFAR10(root='data/', download=True, train=False, transform=transform)
 
-    classes = dataset.classes
-
-    # # example data
-    # img, label = dataset[0]
-    # plt.imshow(img.permute((1, 2, 0)))
-    # print('Label (numeric):', label)
-    # print('Label (textual):', classes[label])
-
-    torch.manual_seed(1)
     val_size = 5000
     train_size = len(dataset) - val_size
     train_data, val_data = random_split(dataset, [train_size, val_size])
-    batch_size=3
+    batch_size=4
 
-    # train_loader = DataLoader(train_data, batch_size, shuffle=True, num_workers=4, pin_memory=True)
-    # val_loader = DataLoader(val_data, batch_size*2, num_workers=4, pin_memory=True)
-    test_loader = DataLoader(test_dataset, batch_size*2, num_workers=4, pin_memory=True)
+    train_loader = DataLoader(train_data, batch_size, shuffle=True, num_workers=2)
+    val_loader = DataLoader(val_data, batch_size, shuffle=False, num_workers=2)
+    test_loader = DataLoader(test_dataset, batch_size, shuffle=False, num_workers=2)
 
-    alexnet = models.alexnet(pretrained=True)
-
-    num_correct = 0
-    num_samples = 0
-    for batch_idx, (data,targets) in enumerate(test_loader):
-        data = data.to(device="cpu")
-        targets = targets.to(device="cpu")
-        ## Forward Pass
-        scores = alexnet(data)
-        _, predictions = scores.max(1)
-        num_correct += (predictions == targets).sum()
-        num_samples += predictions.size(0)
-    print(
-        f"Got {num_correct} / {num_samples} with accuracy {float(num_correct) / float(num_samples) * 100:.2f}"
-    )
+    return train_loader, val_loader, test_loader
 
 
-if __name__ == '__main__':
-    main()
