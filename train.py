@@ -1,11 +1,11 @@
 import torch.nn as nn
 import torch.optim as optim
 
-def train(model, train_loader):
+def train(model, train_loader, learning_rate, epoch):
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.001)
-    for epoch in range(1): # 1 for now to see an initial results
+    optimizer = optim.SGD(model.parameters(), lr=learning_rate)
+    for epoch in range(epoch): # 1 for now to see an initial results
         running_loss = 0.0
         for i, data in enumerate(train_loader, 0):
             inputs, labels = data[0].to(model.device), data[1].to(model.device)

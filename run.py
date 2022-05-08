@@ -7,6 +7,8 @@ import train
 import test
 
 SEED = 2022
+LEARNING_RATE = 0.001
+EPOCH = 3
 
 # set random seed for REPRODUCIBILITY
 torch.manual_seed(SEED)
@@ -19,7 +21,7 @@ def main():
 
     alexnet = model.loadmodel()
 
-    trained_model = train.train(alexnet, train_loader)
+    trained_model = train.train(alexnet, train_loader, LEARNING_RATE, EPOCH)
 
     test.test(trained_model, test_loader)
 
