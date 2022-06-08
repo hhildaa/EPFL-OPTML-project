@@ -27,7 +27,7 @@ def dataload():
     dataset = CIFAR10(root='data/',  download=True, train=True, transform=transform)
     test_dataset = CIFAR10(root='data/', download=True, train=False, transform=transform)
     
-    train_size = 30000
+    train_size = 20000
     train_data, _ = random_split(dataset, [train_size, len(dataset) - train_size])
     
     train_loader = DataLoader(train_data, batch_size=8, shuffle=True, num_workers=2)
