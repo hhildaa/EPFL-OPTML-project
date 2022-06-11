@@ -6,6 +6,9 @@ from torch.utils.data import random_split
 import torchvision.transforms as transforms
 import numpy as np
 
+from scipy.stats import truncnorm
+
+
 #CIFAR10 random labelling taken from https://github.com/pluskid/fitting-random-labels
 class CIFAR10RandomLabels(CIFAR10):
     """CIFAR10 dataset, with support for randomly corrupt labels.
@@ -50,11 +53,30 @@ class CIFAR10RandomLabels(CIFAR10):
     def permute_images(self, perm_level):
         for i, image in enumerate(self.data):
             self.data[i] = self.permute_pixels(image, perm_level)
-
+    #Resamples the data to be a truncated Gaussian of min 0 and max 255.
+    #Gaussian needs to be truncated to be withing [0,255] or else PIL complains
     def random_images(self):
-        mean = np.mean(self.data)
-        std = np.std(self.data)
-        self.data = np.random.normal(mean, std, self.data.shape)
+        #Generate initial sample
+        mu, sigma = np.mean(self.data), np.std(self.data)
+        size = np.prod(self.data.shape)
+        X = np.random.normal(mu, sigma, size)
+
+        #Check if any are out of range
+        lt_ind = X < 0
+        gt_ind = X > 255
+        total = np.sum(lt_ind) + np.sum(gt_ind)
+        #If they are, keep resampling until all values are within the range
+        #This is a dumb approach, but much faster than scipy.stats.truncnorm (https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.truncnorm.html)
+        #for some reason (on Google Colab)
+        while total != 0:
+            new = np.random.normal(mu, sigma, total)
+            X[lt_ind | gt_ind] = new
+            
+            lt_ind = X < 0
+            gt_ind = X > 255
+            total = np.sum(lt_ind) + np.sum(gt_ind)
+            
+        self.data = X.reshape(self.data.shape).astype('uint8')
 
 def dataload(batch_size=64, corrupt_prob=0, perm_level=0, random_noise=False):
     SEED = 2022
