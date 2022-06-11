@@ -16,25 +16,6 @@ torch.manual_seed(SEED)
 np.random.seed(SEED)
 random.seed(SEED)
 
-def dataload():
-    transform = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
-
-    dataset = CIFAR10(root='data/',  download=True, train=True, transform=transform)
-    test_dataset = CIFAR10(root='data/', download=True, train=False, transform=transform)
-    
-    train_size = 25000
-    train_data, _ = random_split(dataset, [train_size, len(dataset) - train_size])
-    
-    train_loader = DataLoader(train_data, batch_size=8, shuffle=True, num_workers=2)
-    test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False, num_workers=2)
-
-    return train_loader, test_loader
-
 
 def loadmodel():
     alexnet = models.alexnet(pretrained=True, dropout=0)

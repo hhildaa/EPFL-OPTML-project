@@ -17,11 +17,15 @@ class CIFAR10RandomLabels(CIFAR10):
     num_classes: int
         Default 10. The number of classes in the dataset.
     """
-    def __init__(self, corrupt_prob=0.0, num_classes=10, **kwargs):
+    def __init__(self, corrupt_prob=0.0, perm_level=0, random_noise=False, num_classes=10, **kwargs):
         super(CIFAR10RandomLabels, self).__init__(**kwargs)
         self.n_classes = num_classes
         if corrupt_prob > 0:
             self.corrupt_labels(corrupt_prob)
+        if perm_level > 0:
+            self.permute_images(perm_level)
+        if random_noise:
+            self.random_images()
 
     def corrupt_labels(self, corrupt_prob):
         labels = np.array(self.targets)
@@ -35,15 +39,35 @@ class CIFAR10RandomLabels(CIFAR10):
 
         self.targets = labels
 
+    def permute_pixels(self, image, perm_level):
+        np.random.seed(12345)
+        image = np.random.permutation(image)
+        if perm_level==2:
+            np.random.seed(12345)
+            image = np.random.permutation(np.swapaxes(image, 1,0))
+            image = np.swapaxes(image,1,0)
+        return image
+    def permute_images(self, perm_level):
+        for i, image in enumerate(self.data):
+            self.data[i] = self.permute_pixels(image, perm_level)
 
-def dataload(batch_size=64, corrupt_prob=0):
+    def random_images(self):
+        mean = np.mean(self.data)
+        std = np.std(self.data)
+        self.data = np.random.normal(mean, std, self.data.shape)
+
+def dataload(batch_size=64, corrupt_prob=0, perm_level=0, random_noise=False):
+    SEED = 2022
+    torch.manual_seed(SEED)
+
     transform = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) #Slightly improves performance, since Alexnet was trained on this
     ])
 
-    dataset = CIFAR10RandomLabels(root='data/',  download=True, train=True, transform=transform, corrupt_prob=corrupt_prob)
+    dataset = CIFAR10RandomLabels(root='data/',  download=True, train=True, transform=transform, corrupt_prob=corrupt_prob, perm_level=perm_level, random_noise=random_noise)
     test_dataset = CIFAR10(root='data/', download=True, train=False, transform=transform)
     
     train_size = 25000
