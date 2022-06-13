@@ -41,11 +41,10 @@ def train(model, optimizer, criterion, train_loader, device):
         print(f"Epoch {epoch} accuracy: {accuracy:.2f}. Loss: {running_loss/len(train_loader):.3f}")
 
         #Finish training once accuracy is 100% or loss is 0
-        #if running_loss == 0 or accuracy == 100 or epoch == 51:
-        if epoch == 51:
+        if running_loss == 0 or accuracy >= 99 or epoch == 51:
             print('Finished Training of AlexNet')
             print(f"Number of epochs until 100% accuracy: {epoch}")
             print(f"Time taken: {time.time() - start_time}")
             break
         epoch += 1
-    return accuracies, losses
+    return accuracies, losses, model

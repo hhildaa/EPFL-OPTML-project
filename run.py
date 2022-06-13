@@ -15,9 +15,9 @@ LEARNING_RATE_ADAM = 0.00001
 BATCH_SIZE = 64
 
 # RUNNING PARAMETERS
-CORRUPT_PROB = [0]
-NOISE = [False, True]
-PERM_LEVEL = [1, 2]
+CORRUPT_PROB = [0, 0.2, 0.4]
+NOISE = [False]
+PERM_LEVEL = []
 OPTIMIZER = ["adam"]            # possible values: "adam", "sgd", "rmsprop"
 
 # set random seed for REPRODUCIBILITY
@@ -36,7 +36,7 @@ def main():
             for noise in NOISE: 
                 print(f"Noise: {noise}")
 
-                train_loader, _ = data.dataload(batch_size=BATCH_SIZE, corrupt_prob=corrupt_prob, perm_level=0, random_noise=noise)
+                train_loader, test_loader = data.dataload(batch_size=BATCH_SIZE, corrupt_prob=corrupt_prob, perm_level=0, random_noise=noise)
                 criterion = nn.CrossEntropyLoss()
 
                 for opt in OPTIMIZER: 
@@ -49,11 +49,12 @@ def main():
                         print("Model: Adam")
                         alexnet, device = model.loadmodel()
                         adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
-                        _,_ = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
+                        _,_, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
+                        test.test(optmodel, test_loader, device)
                     if opt == "sgd": 
                         print("Model: SGD")
                         alexnet, device = model.loadmodel()
-                        sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE)
+                        sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE, momentum = 0.9, weight_decay=1e-4)
                         _,_ = train.train(alexnet, sgd_optimizer, criterion, train_loader, device) 
 
                                
@@ -73,11 +74,12 @@ def main():
                         print("Model: Adam")
                         alexnet, device = model.loadmodel()
                         adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
-                        _,_ = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
+                        _,_, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
+                        test.test(optmodel, test_loader, device)
                     if opt == "sgd": 
                         print("Model: SGD")
                         alexnet, device = model.loadmodel()
-                        sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE)
+                        sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE, momentum = 0.9, weight_decay=1e-4)
                         _,_ = train.train(alexnet, sgd_optimizer, criterion, train_loader, device) 
         
         else: 
@@ -95,11 +97,12 @@ def main():
                     print("Model: Adam")
                     alexnet, device = model.loadmodel()
                     adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
-                    _,_ = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
+                    _,_, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
+                    test.test(optmodel, test_loader, device)
                 if opt == "sgd": 
                     print("Model: SGD")
                     alexnet, device = model.loadmodel()
-                    sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE)
+                    sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE, momentum = 0.9, weight_decay=1e-4)
                     _,_ = train.train(alexnet, sgd_optimizer, criterion, train_loader, device) 
 
 
