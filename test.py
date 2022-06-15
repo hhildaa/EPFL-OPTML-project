@@ -1,6 +1,9 @@
 import torch
 
 def test(model, test_loader, device):
+    """
+    Test the model on the test dataset.
+    """
 
     num_correct = 0
     num_samples = 0

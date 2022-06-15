@@ -79,6 +79,15 @@ class CIFAR10RandomLabels(CIFAR10):
         self.data = X.reshape(self.data.shape).astype('uint8')
 
 def dataload(batch_size=64, corrupt_prob=0, perm_level=0, random_noise=False):
+    """
+    Loading the data into train and testloader.
+    ------
+    batch_size: Batch size.
+    corrupt_prob: Probability of corrupting the labels. Number in [0,1].
+    perm_level: Takes value in {0,1,2}. 0: means no permutation of pixels. 1: permutation of pixels 
+                over x-axis, 2: permutation over x- and y-axis.
+    random_noise: Boolean, decides on whether giving Gaussian noise to the pixels or not.
+    """
     SEED = 2022
     torch.manual_seed(SEED)
 

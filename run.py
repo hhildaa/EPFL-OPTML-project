@@ -15,7 +15,7 @@ LEARNING_RATE_ADAM = 0.00001
 BATCH_SIZE = 64
 
 # RUNNING PARAMETERS
-CORRUPT_PROB = [0, 0.2, 0.4]
+CORRUPT_PROB = [0, 0.2, 0.4, 0.6, 0.8, 1]
 NOISE = [False]
 PERM_LEVEL = []
 OPTIMIZER = ["adam"]            # possible values: "adam", "sgd", "rmsprop"
@@ -61,7 +61,7 @@ def main():
             for perm_level in PERM_LEVEL: 
                 print(f"Permutation level: {perm_level}")
 
-                train_loader, _ = data.dataload(batch_size=BATCH_SIZE, corrupt_prob=corrupt_prob, perm_level=perm_level)
+                train_loader, test_loader = data.dataload(batch_size=BATCH_SIZE, corrupt_prob=corrupt_prob, perm_level=perm_level,)
                 criterion = nn.CrossEntropyLoss()
 
                 for opt in OPTIMIZER: 
@@ -83,7 +83,7 @@ def main():
                         _,_ = train.train(alexnet, sgd_optimizer, criterion, train_loader, device) 
         
         else: 
-            train_loader, _ = data.dataload(batch_size=BATCH_SIZE, corrupt_prob=corrupt_prob)
+            train_loader, test_loader = data.dataload(batch_size=BATCH_SIZE, corrupt_prob=corrupt_prob)
             alexnet, device = model.loadmodel()
             criterion = nn.CrossEntropyLoss()
 

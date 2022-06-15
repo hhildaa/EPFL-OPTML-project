@@ -4,6 +4,8 @@ import torch.optim as optim
 import time
 
 def train(model, optimizer, criterion, train_loader, device):
+    """Optimizing the trained model, with the specified optimizer using the criterion as loss. 
+    """
     epoch = 1
     start_time = time.time()
     #Keep track of epoch accuracies and losses
@@ -38,10 +40,10 @@ def train(model, optimizer, criterion, train_loader, device):
         accuracies.append(accuracy)
         losses.append(running_loss/len(train_loader))
         
-        print(f"Epoch {epoch} accuracy: {accuracy:.2f}. Loss: {running_loss/len(train_loader):.3f}")
+        print(f"Epoch {epoch} accuracy: {accuracy:.2f} Loss: {running_loss/len(train_loader):.3f}")
 
         #Finish training once accuracy is 100% or loss is 0
-        if running_loss == 0 or accuracy >= 99 or epoch == 51:
+        if accuracy == 100:
             print('Finished Training of AlexNet')
             print(f"Number of epochs until 100% accuracy: {epoch}")
             print(f"Time taken: {time.time() - start_time}")
