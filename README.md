@@ -7,7 +7,7 @@ The goal of the project was to compare different optimisers on images with corru
 - **True labels:** Original dataset with no corruptions.
 - **Partially corrupted labels:** Each label is corrupted with probability p, where p ∈ [0.2, 0.4, 0.6, 0.8, 1]
 - **Shuffled pixels:** The same pixel permutation is applied to the entire dataset. This is done in 2 levels, the permutation is applied along a single axis or along both axis.
-- **Random noise:** A Gaussian distribution with same mean and variance as the original dataset is used to generate a new dataset.
+- **Random noise:** A Gaussian distribution with same mean and variance as the original dataset is used to generate a new dataset of the same dimensions.
 
 #### Used optimizers
 - SGD
@@ -16,14 +16,13 @@ The goal of the project was to compare different optimisers on images with corru
 
 ## Folder structure
     .
-    ├── data.py: Loads randomly selected 25.000 train images from CIFAR10 dataset by applying the selected corruption.
+    ├── data.py: Loads randomly selected 25,000 train images from CIFAR10 dataset by applying the selected corruption.
     ├── train.py: Train the model with selected optimiser until convergence to 100% accuracy. 
     ├── run.py:  Run the experiments for the different optimizers on the original and the manipulated data.
     ├── test.py: Tests the performance of trained model with uncorrupted test set.
     ├── model.py: Load pretrained AlexNet modified for 10 output classes.
     ├── plot.py: Create plots for the experiments.
     ├── SGD.ipynb: Experiment results for SGD optimiser.
-    ├── ADAM.ipynb: Experiment results for ADAM optimiser.
     └── RMSprop.ipynb: Experiment results for RMSprop optimiser.
 
 ## Dependency
@@ -31,7 +30,7 @@ The goal of the project was to compare different optimisers on images with corru
 
 
 ## Reproductibility
-To reproduce our experiment results, one can run the run.py file with the following parameters.
+To reproduce our experiment results, one can run the run.py file with the following parameters. Note that this won't produce any plots. To do so see further below.
 ```
   CORRUPT_PROB = [0, 0.2, 0.4, 0.6, 0.8, 1]
   NOISE = [True, False]
@@ -41,7 +40,7 @@ To reproduce our experiment results, one can run the run.py file with the follow
 As running the experiments computational heavy, we used GPU for experiments for ADAM and Google collab notebooks for SGD and RMSprop.
 These notebooks are also available in the repository under `SGD.ipynb` and `RMSprop.ipynb` names.
 
-For reproducing our plots, the parameters should be chosen the following. 
+For reproducing our plots, the parameters need to be one following. 
 Plot for corrupted labels:
 ```
 CORRUPT_PROB = [0, 0.2, 0.4, 0.6, 0.8, 1]
