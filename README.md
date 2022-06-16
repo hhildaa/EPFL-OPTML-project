@@ -18,13 +18,16 @@ The goal of the project was to compare different optimisers on images with corru
     .
     ├── data.py: Loads randomly selected 25.000 train images from CIFAR10 dataset by applying the selected corruption.
     ├── train.py: Train the model with selected optimiser until convergence to 100% accuracy. 
-    ├── run.py: Load pretrained AlexNet modified for 10 output classes, run the experiments for the different optimizers on the original and the manipulated data.
+    ├── run.py:  Run the experiments for the different optimizers on the original and the manipulated data.
     ├── test.py: Tests the performance of trained model with uncorrupted test set.
+    ├── model.py: Load pretrained AlexNet modified for 10 output classes.
+    ├── plot.py: Create plots for the experiments.
     ├── SGD.ipynb: Experiment results for SGD optimiser.
     ├── ADAM.ipynb: Experiment results for ADAM optimiser.
     └── RMSprop.ipynb: Experiment results for RMSprop optimiser.
 
 ## Dependency
+
 
 
 ## Reproductibility
