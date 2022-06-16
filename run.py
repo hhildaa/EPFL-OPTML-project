@@ -29,6 +29,9 @@ np.random.seed(SEED)
 random.seed(SEED)
 
 def main():
+    """
+    Run experiments. 
+    """
     # save results for plots
     label_accs = {opt: [] for opt in OPTIMIZER}
     image_accs = {opt: [] for opt in OPTIMIZER}
