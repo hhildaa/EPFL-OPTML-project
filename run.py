@@ -12,16 +12,16 @@ import test
 import plot
 
 # PARAMETERS
-LEARNING_RATE = 0.001
+LEARNING_RATE = 0.01
 LEARNING_RATE_ADAM = 0.00001
 LEARNING_RATE_RMS = 0.00001
 BATCH_SIZE = 64
 
 # RUNNING PARAMETERS
-CORRUPT_PROB = [0]
+CORRUPT_PROB = [0, 0.2, 0.4, 0.6, 0.8, 1]
 NOISE = [True, False]
-PERM_LEVEL = [0, 1, 2]
-OPTIMIZER = ["rmsprop"]            # possible values: "adam", "sgd", "rmsprop"
+PERM_LEVEL = [1, 2]
+OPTIMIZER = ["adam", "sgd", "rmsprop"]            # possible values: "adam", "sgd", "rmsprop"
 
 # set random seed for REPRODUCIBILITY
 SEED = 2022
@@ -65,7 +65,7 @@ def main():
                     if opt == "adam":
                         print("Model: Adam")
                         alexnet, device = model.loadmodel()
-                        adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
+                        adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM, weight_decay=1e-4)
                         accs, _, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
                         test.test(optmodel, test_loader, device)
 
@@ -89,7 +89,7 @@ def main():
                 print(f"Permutation level: {perm_level}")
 
                 # load data
-                train_loader, test_loader = data.dataload(batch_size=BATCH_SIZE, corrupt_prob=corrupt_prob, perm_level=perm_level,)
+                train_loader, test_loader = data.dataload(batch_size=BATCH_SIZE, corrupt_prob=corrupt_prob, perm_level=perm_level)
                 criterion = nn.CrossEntropyLoss()
 
                 # run for the different optimizers
@@ -103,7 +103,7 @@ def main():
                     if opt == "adam":
                         print("Model: Adam")
                         alexnet, device = model.loadmodel()
-                        adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
+                        adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM, weight_decay=1e-4)
                         accs, _, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
                         test.test(optmodel, test_loader, device)
                     if opt == "sgd": 
@@ -135,7 +135,7 @@ def main():
                 if opt == "adam":
                     print("Model: Adam")
                     alexnet, device = model.loadmodel()
-                    adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
+                    adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM, weight_decay=1e-4)
                     accs, _, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
                     test.test(optmodel, test_loader, device)
                 if opt == "sgd": 
