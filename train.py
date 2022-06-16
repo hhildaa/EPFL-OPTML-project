@@ -56,4 +56,4 @@ def train(model, optimizer, criterion, train_loader, device):
             print(f"Time taken: {time.time() - start_time}")
             break
         epoch += 1
-    return accuracies, losses
+    return accuracies, losses, model 
