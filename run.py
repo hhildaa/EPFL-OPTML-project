@@ -36,6 +36,7 @@ def main():
     # save results for plots
     label_accs = {opt: [] for opt in OPTIMIZER}
     image_accs = {opt: [] for opt in OPTIMIZER}
+    gen_errors = {opt: [] for opt in OPTIMIZER}
     
     # run experiments for different label corruption probabilities
     for corrupt_prob in CORRUPT_PROB: 
@@ -60,21 +61,21 @@ def main():
                         alexnet, device = model.loadmodel()
                         rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE_RMS, weight_decay=1e-4)
                         accs, _, optmodel = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
-                        test.test(optmodel, test_loader, device)
+                        error = test.test(optmodel, test_loader, device)
                         
                     if opt == "adam":
                         print("Model: Adam")
                         alexnet, device = model.loadmodel()
                         adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
                         accs, _, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
-                        test.test(optmodel, test_loader, device)
+                        error = test.test(optmodel, test_loader, device)
 
                     if opt == "sgd": 
                         print("Model: SGD")
                         alexnet, device = model.loadmodel()
                         sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE, momentum = 0.9, weight_decay=1e-4)
                         accs, _, optmodel = train.train(alexnet, sgd_optimizer, criterion, train_loader, device) 
-                        test.test(optmodel, test_loader, device)
+                        error = test.test(optmodel, test_loader, device)
                     
                     # save results for plot
                     if noise:
@@ -83,6 +84,7 @@ def main():
                         label_accs[opt].append(accs)
                         #We also want ground truth when plotting the image corruptions
                         image_accs[opt].append(accs)
+                        gen_errors.append(100-error)
 
             # run experiments for pixel permutations               
             for perm_level in PERM_LEVEL: 
@@ -99,22 +101,23 @@ def main():
                         alexnet, device = model.loadmodel()
                         rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE_RMS, weight_decay=1e-4)
                         accs, _, optmodel = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
-                        test.test(optmodel, test_loader, device)
+                        error = test.test(optmodel, test_loader, device)
                     if opt == "adam":
                         print("Model: Adam")
                         alexnet, device = model.loadmodel()
                         adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
                         accs, _, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
-                        test.test(optmodel, test_loader, device)
+                        error = test.test(optmodel, test_loader, device)
                     if opt == "sgd": 
                         print("Model: SGD")
                         alexnet, device = model.loadmodel()
                         sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE, momentum = 0.9, weight_decay=1e-4)
                         accs, _, optmodel = train.train(alexnet, sgd_optimizer, criterion, train_loader, device)
-                        test.test(optmodel, test_loader, device)
+                        error = test.test(optmodel, test_loader, device)
                     
                     # save results for plot
                     image_accs[opt].append(accs)
+                    gen_errors[opt].append(100-error)
         
         # run label corrupted experiments
         else: 
@@ -131,26 +134,27 @@ def main():
                     alexnet, device = model.loadmodel()
                     rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE_RMS, weight_decay=1e-4)
                     accs, _, optmodel = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
-                    test.test(optmodel, test_loader, device)
+                    error = test.test(optmodel, test_loader, device)
                 if opt == "adam":
                     print("Model: Adam")
                     alexnet, device = model.loadmodel()
                     adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
                     accs, _, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
-                    test.test(optmodel, test_loader, device)
+                    error = test.test(optmodel, test_loader, device)
                 if opt == "sgd": 
                     print("Model: SGD")
                     alexnet, device = model.loadmodel()
                     sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE, momentum = 0.9, weight_decay=1e-4)
                     accs, _, optmodel = train.train(alexnet, sgd_optimizer, criterion, train_loader, device)
-                    test.test(optmodel, test_loader, device)
+                    error = test.test(optmodel, test_loader, device)
                 
                 # save results for plot
                 label_accs[opt].append(accs)
+                gen_errors[opt].append(100-error)
                 if corrupt_prob == 1:
                     #We also want 100% random labels when plotting the image corruptions
                     image_accs[opt].append(accs)
-    plot.save_plots(label_accs, image_accs)
+    plot.save_plots(label_accs, image_accs, gen_errors)
 
 
 if __name__ == "__main__": 

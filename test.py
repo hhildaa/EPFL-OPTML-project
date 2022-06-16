@@ -24,3 +24,4 @@ def test(model, test_loader, device):
     accuracy = float(num_correct) / float(num_samples) * 100
             
     print(f"Test accuracy {accuracy}")
+    return accuracy
