@@ -22,7 +22,7 @@ This project compares the performance of different optimisers on images with cor
 
 
 ## Reproductibility
-To reproduce our results, one can run the run.py file with the following parameters.
+To reproduce our experiment results, one can run the run.py file with the following parameters.
 ```
   CORRUPT_PROB = [0, 0.2, 0.4, 0.6, 0.8, 1]
   NOISE = [True, False]
@@ -31,6 +31,20 @@ To reproduce our results, one can run the run.py file with the following paramet
 ```
 As running the experiments computational heavy, we used GPU for experiments for ADAM and Google collab notebooks for SGD and RMSprop.
 These notebooks are also available in the repository under `SGD.ipynb` and `RMSprop.ipynb` names.
+
+For reproducing our plots, the parameters should be chosen the following. 
+Plot for corrupted labels:
+```
+CORRUPT_PROB = [0, 0.2, 0.4, 0.6, 0.8, 1]
+NOISE = [False]
+PERM_LEVEL = []
+```
+Plot for corrupted images: 
+```
+CORRUPT_PROB = [0, 1]
+NOISE = [False, True]
+PERM_LEVEL = [1, 2]
+```
 
 ## Authors:
 - Hilda Abigél Horváth
