@@ -2,6 +2,13 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import time
+import numpy as np
+import random
+
+SEED = 2022
+torch.manual_seed(SEED)
+np.random.seed(SEED)
+random.seed(SEED)
 
 def train(model, optimizer, criterion, train_loader, device):
     """Optimizing the trained model, with the specified optimizer using the criterion as loss. 
