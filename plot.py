@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+#Plotting functions.
+#These functions only plot the same graphs as the report, so if they encounter any extra data/ not enough data, nothing gets plotted
+
 def plot_label_corruptions(label_accs):
     markers = ['x','o','v','*','^','s']
     
@@ -49,6 +52,25 @@ def plot_image_corruptions(image_accs):
 
         plt.savefig(f'{opt}_corrupt_images.pdf')
 
-def save_plots(label_accs, image_accs):
+def plot_generalisation_error(gen_errors):
+    ps = [0, 0.2, 0.4, 0.6, 0.8, 1]
+    plot = True
+    for opt, marker in zip(gen_errors, ['o', '*', 's']):
+        #Generalisation errors were calculated for the different label corruptions only
+        if len(gen_errors[opt]) != len(ps):
+            plot = False
+            break
+        plt.plot(ps,gen_errors[opt], marker=marker)
+    
+    if plot:
+        plt.axhline(y=90, color='r', linestyle='--')
+        plt.ylabel('Test error (%)')
+        plt.xlabel('Label corruption')
+        plt.yticks(range(10,110,10), [f'{x}%' for x in range(10,110,10)])
+        plt.legend(list(gen_errors.keys()))
+        plt.savefig('gen_error.pdf')
+
+def save_plots(label_accs, image_accs, gen_errors):
     plot_label_corruptions(label_accs)
     plot_image_corruptions(image_accs)
+    plot_generalisation_error(gen_errors)
