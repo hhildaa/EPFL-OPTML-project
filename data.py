@@ -57,6 +57,7 @@ class CIFAR10RandomLabels(CIFAR10):
     #Gaussian needs to be truncated to be withing [0,255] or else PIL complains
     def random_images(self):
         #Generate initial sample
+        np.random.seed(2022)
         mu, sigma = np.mean(self.data), np.std(self.data)
         size = np.prod(self.data.shape)
         X = np.random.normal(mu, sigma, size)
@@ -69,6 +70,7 @@ class CIFAR10RandomLabels(CIFAR10):
         #This is a dumb approach, but much faster than scipy.stats.truncnorm (https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.truncnorm.html)
         #for some reason (on Google Colab)
         while total != 0:
+            np.random.seed(2022)
             new = np.random.normal(mu, sigma, total)
             X[lt_ind | gt_ind] = new
             
