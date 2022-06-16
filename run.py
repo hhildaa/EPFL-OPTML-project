@@ -8,6 +8,7 @@ import data
 import model
 import train
 import test
+import plot
 
 # PARAMETERS
 LEARNING_RATE = 0.001
@@ -27,7 +28,9 @@ np.random.seed(SEED)
 random.seed(SEED)
 
 def main():
-
+    label_accs = {opt: [] for opt in OPTIMIZER}
+    image_accs = {opt: [] for opt in OPTIMIZER}
+    
     for corrupt_prob in CORRUPT_PROB: 
         print ("------------------------")
         print(f"Corruption probability: {corrupt_prob}")
@@ -44,18 +47,27 @@ def main():
                         print(f"Model: RMS")
                         alexnet, device = model.loadmodel()
                         rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE, weight_decay=1e-4)
-                        rms_accuracies, rms_losses = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
+                        accs, rms_losses = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
+                        
                     if opt == "adam":
                         print("Model: Adam")
                         alexnet, device = model.loadmodel()
                         adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
-                        _,_, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
+                        accs,_ = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
                         test.test(optmodel, test_loader, device)
+
                     if opt == "sgd": 
                         print("Model: SGD")
                         alexnet, device = model.loadmodel()
                         sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE, momentum = 0.9, weight_decay=1e-4)
-                        _,_ = train.train(alexnet, sgd_optimizer, criterion, train_loader, device) 
+                        accs,_ = train.train(alexnet, sgd_optimizer, criterion, train_loader, device) 
+
+                    if noise:
+                        image_accs[opt].append(accs)
+                    else:
+                        label_accs[opt].append(accs)
+                        #We also want ground truth when plotting the image corruptions
+                        image_accs[opt].append(accs)
 
                                
             for perm_level in PERM_LEVEL: 
@@ -69,18 +81,20 @@ def main():
                         print(f"Model: RMS")
                         alexnet, device = model.loadmodel()
                         rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE, weight_decay=1e-4)
-                        rms_accuracies, rms_losses = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
+                        accs, rms_losses = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
                     if opt == "adam":
                         print("Model: Adam")
                         alexnet, device = model.loadmodel()
                         adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
-                        _,_, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
+                        accs,_ = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
                         test.test(optmodel, test_loader, device)
                     if opt == "sgd": 
                         print("Model: SGD")
                         alexnet, device = model.loadmodel()
                         sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE, momentum = 0.9, weight_decay=1e-4)
-                        _,_ = train.train(alexnet, sgd_optimizer, criterion, train_loader, device) 
+                        accs,_ = train.train(alexnet, sgd_optimizer, criterion, train_loader, device)
+                    
+                    image_accs[opt].append(accs)
         
         else: 
             train_loader, test_loader = data.dataload(batch_size=BATCH_SIZE, corrupt_prob=corrupt_prob)
@@ -92,20 +106,26 @@ def main():
                     print(f"Model: RMS")
                     alexnet, device = model.loadmodel()
                     rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE, weight_decay=1e-4)
-                    rms_accuracies, rms_losses = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
+                    accs, rms_losses = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
+                    test.test(alexnet, test_loader, device)
                 if opt == "adam":
                     print("Model: Adam")
                     alexnet, device = model.loadmodel()
                     adam_optimizer = optim.Adam(alexnet.parameters(), lr=LEARNING_RATE_ADAM)
-                    _,_, optmodel = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
-                    test.test(optmodel, test_loader, device)
+                    accs, adam_losses = train.train(alexnet, adam_optimizer, criterion, train_loader, device) 
+                    test.test(alexnet, test_loader, device)
                 if opt == "sgd": 
                     print("Model: SGD")
                     alexnet, device = model.loadmodel()
                     sgd_optimizer = optim.SGD(alexnet.parameters(), lr=LEARNING_RATE, momentum = 0.9, weight_decay=1e-4)
-                    _,_ = train.train(alexnet, sgd_optimizer, criterion, train_loader, device) 
-
-
+                    accs, sgd_losses = train.train(alexnet, sgd_optimizer, criterion, train_loader, device)
+                    test.test(alexnet, test_loader, device)
+                
+                label_accs[opt].append(accs)
+                if corrupt_prob == 1:
+                    #We also want 100% random labels when plotting the image corruptions
+                    image_accs[opt].append(accs)
+    plot.save_plots(label_accs, image_accs)
 if __name__ == "__main__": 
     main()
 
