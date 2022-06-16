@@ -53,6 +53,11 @@ def plot_image_corruptions(image_accs):
         plt.savefig(f'{opt}_corrupt_images.pdf')
 
 def plot_generalisation_error(gen_errors):
+    #Need SGD, Adam, and RMSprop for the generalisation errors
+    if len(gen_errors) != 3:
+        return
+    
+    plt.figure()
     ps = [0, 0.2, 0.4, 0.6, 0.8, 1]
     plot = True
     for opt, marker in zip(gen_errors, ['o', '*', 's']):
@@ -63,14 +68,17 @@ def plot_generalisation_error(gen_errors):
         plt.plot(ps,gen_errors[opt], marker=marker)
     
     if plot:
+        plt.legend(list(gen_errors.keys()))
         plt.axhline(y=90, color='r', linestyle='--')
         plt.ylabel('Test error (%)')
         plt.xlabel('Label corruption')
         plt.yticks(range(10,110,10), [f'{x}%' for x in range(10,110,10)])
-        plt.legend(list(gen_errors.keys()))
         plt.savefig('gen_error.pdf')
 
 def save_plots(label_accs, image_accs, gen_errors):
     plot_label_corruptions(label_accs)
+    plt.close()
     plot_image_corruptions(image_accs)
+    plt.close()
     plot_generalisation_error(gen_errors)
+    plt.close()
