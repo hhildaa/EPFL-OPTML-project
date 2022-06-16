@@ -3,6 +3,9 @@ import torchvision.models as models
 import torch.nn as nn
 
 def loadmodel():
+    """
+    Load AlexNet.
+    """
     alexnet = models.alexnet(pretrained=True, dropout=0)
     alexnet.classifier[6] = nn.Linear(4096,10)
 

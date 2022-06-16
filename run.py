@@ -14,13 +14,14 @@ import plot
 # PARAMETERS
 LEARNING_RATE = 0.001
 LEARNING_RATE_ADAM = 0.00001
+LEARNING_RATE_RMS = 0.00001
 BATCH_SIZE = 64
 
 # RUNNING PARAMETERS
-CORRUPT_PROB = [0, 0.2, 0.4, 0.6, 0.8, 1]
-NOISE = [False]
-PERM_LEVEL = []
-OPTIMIZER = ["adam"]            # possible values: "adam", "sgd", "rmsprop"
+CORRUPT_PROB = [0]
+NOISE = [True, False]
+PERM_LEVEL = [0, 1, 2]
+OPTIMIZER = ["rmsprop"]            # possible values: "adam", "sgd", "rmsprop"
 
 # set random seed for REPRODUCIBILITY
 SEED = 2022
@@ -57,7 +58,7 @@ def main():
                     if opt == "rmsprop": 
                         print(f"Model: RMS")
                         alexnet, device = model.loadmodel()
-                        rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE, weight_decay=1e-4)
+                        rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE_RMS, weight_decay=1e-4)
                         accs, _, optmodel = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
                         test.test(optmodel, test_loader, device)
                         
@@ -96,7 +97,7 @@ def main():
                     if opt == "rmsprop": 
                         print(f"Model: RMS")
                         alexnet, device = model.loadmodel()
-                        rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE, weight_decay=1e-4)
+                        rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE_RMS, weight_decay=1e-4)
                         accs, _, optmodel = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
                         test.test(optmodel, test_loader, device)
                     if opt == "adam":
@@ -128,7 +129,7 @@ def main():
                 if opt == "rmsprop": 
                     print(f"Model: RMS")
                     alexnet, device = model.loadmodel()
-                    rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE, weight_decay=1e-4)
+                    rms_optimizer = optim.RMSprop(alexnet.parameters(), lr=LEARNING_RATE_RMS, weight_decay=1e-4)
                     accs, _, optmodel = train.train(alexnet, rms_optimizer, criterion, train_loader, device)
                     test.test(optmodel, test_loader, device)
                 if opt == "adam":
