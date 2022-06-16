@@ -46,12 +46,14 @@ Plot for corrupted labels:
 CORRUPT_PROB = [0, 0.2, 0.4, 0.6, 0.8, 1]
 NOISE = [False]
 PERM_LEVEL = []
+OPTIMIZER = ["adam", "sgd", "rmsprop"] 
 ```
 Plot for corrupted images: 
 ```
 CORRUPT_PROB = [0, 1]
 NOISE = [False, True]
 PERM_LEVEL = [1, 2]
+OPTIMIZER = ["adam", "sgd", "rmsprop"] 
 ```
 
 ## Authors:
