@@ -1,5 +1,7 @@
 # EPFL Course - Optimization for Machine Learning Mini Project - CS-439
-This project compares the performance of different optimisers on images with corrupted labels and corrupted images through a series of systematic experiments.
+
+## Abstract
+The goal of the project was to compare different optimisers on images with corrupted labels and corrupted images to examine how much neural networks can memorise a big amount of data. We found that while the networks are able to fit and obtain 100\% train accuracy even with fully randomized labels, the selection of optimiser can have a significant effect on the training time. However, the generalisation error is not effected by the choice of optimiser. This project was a part of the Optimization for Machine Learning course at EPFL in 2022. 
 
 ## Applied corruptions:
 - **True labels:** Original dataset with no corruptions.
