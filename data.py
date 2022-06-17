@@ -6,8 +6,6 @@ from torch.utils.data import random_split
 import torchvision.transforms as transforms
 import numpy as np
 
-from scipy.stats import truncnorm
-
 
 #CIFAR10 random labelling taken from https://github.com/pluskid/fitting-random-labels
 class CIFAR10RandomLabels(CIFAR10):
