@@ -41,7 +41,7 @@ def plot_image_corruptions(image_accs):
         ax = fig.add_subplot(111)
         for acc, marker in zip(image_accs[opt], markers):
             plt.plot(range(1, len(acc)+1), acc, marker=marker,linewidth=2.5)
-        plt.legend(['True labels','Shuffling along\nx-axis', 'Shuffling along\nx and y-axis', 'Gaussian noise', '100% random labels'])
+        plt.legend(['True labels', 'Gaussian noise', 'Shuffling along\nx-axis', 'Shuffling along\nx and y-axis', '100% random labels'])
         plt.ylabel('Train accuracy (%)')
         plt.xlabel('Epoch')
         #Add '%' symbol to yticks
