@@ -28,7 +28,7 @@ The goal of the project was to compare different optimisers on images with corru
 
 
 ## Reproductibility
-To reproduce our experiment results, one can run the run.py file with the following parameters. Note that this won't produce any plots. To do so see further below.
+To reproduce our experiment results, one can run the run.py file with the following parameters. To reproduce the plots see further below.
 ```
   CORRUPT_PROB = [0, 0.2, 0.4, 0.6, 0.8, 1]
   NOISE = [True, False]
