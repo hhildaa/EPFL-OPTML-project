@@ -22,11 +22,9 @@ The goal of the project was to compare different optimisers on images with corru
     ├── test.py: Tests the performance of trained model with uncorrupted test set.
     ├── model.py: Load pretrained AlexNet modified for 10 output classes.
     ├── plot.py: Used to reproduce the exact plots seen in the report.
+    ├── requirements.txt: Requirements for running the code.
     ├── SGD.ipynb: Experiment results for SGD optimiser.
     └── RMSprop.ipynb: Experiment results for RMSprop optimiser.
-
-## Dependency
-
 
 
 ## Reproductibility
